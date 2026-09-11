@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy Birthday! 🎉</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #a8edd8 0%, #fed6e3 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      overflow-x: hidden;
+    }
+
+    .card-container {
+      background: #ffffff;
+      padding: 25px 20px;
+      border-radius: 25px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      position: relative;
+      border: 4px solid #ff758c;
+      animation: bounceIn 0.8s ease;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.3); opacity: 0; }
+      50% { transform: scale(1.05); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    h1 {
+      color: #ff4757;
+      margin-bottom: 15px;
+      font-size: 1.6rem;
+      text-shadow: 2px 2px #ffeaa7;
+    }
+
+    p {
+      color: #2f3542;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* --- Tampilan 1: Amplop Goyang --- */
+    .envelope-box {
+      margin: 25px auto;
+      cursor: pointer;
+      width: 130px;
+      height: 90px;
+      background: #ff6b81;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 3rem;
+      box-shadow: 0 8px 0 #ed4956;
+      animation: wiggle 1.5s infinite ease-in-out;
+      transition: transform 0.2s;
+    }
+
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-8deg); }
+      75% { transform: rotate(8deg); }
+    }
+
+    .envelope-box:active {
+      transform: translateY(4px);
+      box-shadow: 0 4px 0 #ed4956;
+    }
+
+    /* --- Tampilan 2: Doa & Harapan --- */
+    .wish-card {
+      background: #fff0f3;
+      padding: 18px;
+      border-radius: 15px;
+      border: 2px dashed #ff4757;
+      margin: 15px 0;
+      text-align: center;
+    }
+
+    .wish-card p {
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    /* --- Tampilan 3: Foto & Part Ngeselin --- */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .photo-card {
+      width: 100%;
+      height: 110px;
+      background: #ffeaa7;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 3px solid #ff758c;
+      transform: rotate(calc(-3deg + 6deg * var(--i)));
+    }
+
+    .photo-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Tombol-Tombol */
+    .btn {
+      background: #ff4757;
+      color: white;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      box-shadow: 0 5px 0 #e84118;
+      transition: all 0.2s;
+    }
+
+    .btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #e84118;
+    }
+
+    .prank-area {
+      position: relative;
+      height: 90px;
+      margin-top: 15px;
+    }
+
+    #btn-no {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #a4b0be;
+      box-shadow: 0 5px 0 #747d8c;
+    }
+
+    /* Modals / Pop-up Jail */
+    .modal {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      border-radius: 20px;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 10;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: center;
+      animation: pop 0.3s ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.5); }
+      100% { transform: scale(1); }
+    }
+    .audio-ctrl {
+                top: 15px;
+                right: 15px;
+                bottom: auto;
+                font-size: 0.75rem;
+                padding: 6px 12px;
+            }
+  </style>
+</head>
+<body>
+
+  <div class="card-container">
+    
+    <!-- TAMPILAN 1: AMPLOP -->
+    <div id="screen1" class="screen active">
+      <h1>ADA PAKET RAHASIA! 📦</h1>
+      <p>Klik amplop di bawah ini buat buka:</p>
+      <div class="envelope-box" onclick="triggerJail1()">
+        ✉️
+      </div>
+      <p style="font-size: 0.8rem; color: #888;">*Awas, jangan sembarangan klik!</p>
+    </div>
+
+    <!-- TAMPILAN 2: DOA & HARAPAN -->
+    <div id="screen2" class="screen">
+      <h1>HBD YA! 🎉🎂</h1>
+      <div class="wish-card">
+        <p>🥳 Selamat bertambah umur!</p>
+        <p>Semoga makin pinter, rezekinya lancar, ga gampang emosi, dan semua impian kamu bisa terkabul!</p>
+        <p>Tetep jadi temen NAKAL kayak biasa ya! 😜</p>
+      </div>
+      <button class="btn" onclick="openCaptcha()">Lanjut Lihat Foto 📸</button>
+    </div>
+
+    <!-- TAMPILAN 3: FOTO & JEBAGAN NGESELIN -->
+    <div id="screen3" class="screen">
+      <h1>GALERI  🖼️</h1>
+      <div class="photo-grid">
+        <div class="photo-card" style="--i:1"><img src="maa.jpeg" alt="Foto 1"></div>
+        <div class="photo-card" style="--i:2"><img src="WhatsApp Image 2026-08-08 at 14.38.26.jpeg" alt="Foto 2"></div>
+        <div class="photo-card" style="--i:3"><img src="WhatsApp Image 2026-09-09 at 18.34.17.jpeg" alt="Foto 3"></div>
+        <div class="photo-card" style="--i:4"><img src="WhatsApp Image 2026-09-09 at 18.34.20.jpeg" alt="Foto 4"></div>
+      </div>
+
+      <p style="font-weight: bold; margin-top: 10px; color: #ff4757;">HARI INI TRAKTIR MAKAN BISA KALI? 🍕</p>
+      
+      <div class="prank-area">
+        <button class="btn" onclick="alert('DEAL YA! Ditunggu makan-makannya! 🥳🎉')">BISA BANGET!</button>
+        <button class="btn" id="btn-no" onmouseover="dodgeButton()" onclick="dodgeButton()" ontouchstart="dodgeButton()">ENGGAK</button>
+      </div>
+    </div>
+
+    <!-- POPUP JAIL 1 (Kaget Lucu) -->
+    <div id="modal1" class="modal">
+      <div class="modal-content">
+        <h2 style="font-size: 3rem;">🤪</h2>
+        <h3 style="color: #ff4757; margin: 10px 0;">SIAPA SURUH KLIK?!</h3>
+        <p>Yee kepo banget sih! Tapi yaudah deh boleh dibaca...</p>
+        <br>
+        <button class="btn" onclick="closeModal1()">Buka Pesan Asli ➡️</button>
+      </div>
+    </div>
+
+    <!-- POPUP CAPTCHA NGESELIN -->
+    <div id="modal2" class="modal">
+      <div class="modal-content">
+        <h3>VERIFIKASI MANUSIA 🤖</h3>
+        <p style="margin: 10px 0;">Jawab dulu: Siapa yang paling cakep/keren?</p>
+        <button class="btn" style="margin-bottom: 8px; width: 100%;" onclick="goToScreen(3); closeModal2();">Yang Bikin Web Ini 😎</button>
+        <button class="btn" style="background: #a4b0be; width: 100%;" onclick="alert('Jawaban SALAH! Coba pilih tombol yang atas 😜')">Yang Ulang Tahun 😜</button>
+      </div>
+    </div>
+  </div>
+  <div>
+     <div class="audio-ctrl" onclick="toggleAudio()">
+        🎵 <span id="audio-status">musik: Mute</span>
+    </div>
+
+     <audio id="bgm" loop>
+        <source src="Jamrud - Selamat Ulang Tahun (Lirik).mp3">
+    </audio>
+  </div>
+
+  <script>
+     // System Audio Simple
+        const audio = document.getElementById('bgm');
+        const audioStatus = document.getElementById('audio-status');
+
+        function toggleAudio() {
+            if (audio.paused) {
+                audio.play();
+                audioStatus.innerText = "MUSIK: On 🔊";
+            } else {
+                audio.pause();
+                audioStatus.innerText = "MUSIK: Mute 🔇";
+            }
+        }
+    function goToScreen(screenNumber) {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      document.getElementById('screen' + screenNumber).classList.add('active');
+    }
+
+    function triggerJail1() {
+      document.getElementById('modal1').style.display = 'flex';
+    }
+
+    function closeModal1() {
+      document.getElementById('modal1').style.display = 'none';
+      goToScreen(2);
+    }
+
+    function openCaptcha() {
+      document.getElementById('modal2').style.display = 'flex';
+    }
+
+    function closeModal2() {
+      document.getElementById('modal2').style.display = 'none';
+    }
+
+    // Tombol kabur
+    function dodgeButton() {
+      const btn = document.getElementById('btn-no');
+      const randomX = Math.floor(Math.random() * 160) - 80;
+      const randomY = Math.floor(Math.random() * 60) - 30;
+      btn.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomX}deg)`;
+    }
+  </script>
+
+</body>
+</html>
